@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Study Assistant</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <button id="menu-toggle" class="menu-toggle" aria-label="Toggle History Sidebar" aria-expanded="false" aria-controls="history-sidebar">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="app-container">
+    <aside id="history-sidebar">
+      <h2>Study History</h2>
+      <ul id="history-list"></ul>
+      <button id="clearHistoryBtn" class="button secondary">Clear History</button>
+    </aside>
+
+    <main id="app">
+      <header>
+        <h1>Study Mania</h1>
+        <p>Upload your material, ask questions, and test your knowledge with AI-generated quizzes.</p>
+      </header>
+
+      <section id="upload-section" aria-labelledby="upload-heading">
+        <h2 id="upload-heading">1. Upload Study Material</h2>
+        <div class="file-input-wrapper">
+          <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx" aria-describedby="file-hint">
+          <label for="fileInput" class="file-input-label">Choose a file (.txt, .pdf, .docx)</label>
+        </div>
+        <button id="processBtn" class="button">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM12 11C11.17 11 10.5 10.33 10.5 9.5C10.5 8.67 11.17 8 12 8C12.83 8 13.5 8.67 13.5 9.5C13.5 10.33 12.83 11 12 11ZM13 9V3.5L18.5 9H13Z"></path></svg>
+          <span>Process Material</span>
+        </button>
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="qa-section" aria-labelledby="qa-heading">
+        <h2 id="qa-heading">2. Test Your Knowledge</h2>
+        <textarea id="question" placeholder="Ask a question about your material..." rows="4" aria-label="Your Question"></textarea>
+        <div class="button-group">
+          <button id="askBtn" class="button" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM13.57 11.57L12 15L10.43 11.57L7 10L10.43 8.43L12 5L13.57 8.43L17 10L13.57 11.57Z"></path></svg>
+            <span>Ask AI</span>
+          </button>
+          <button id="startQuizBtn" class="button" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 16H9V12H11V16ZM11 10H9V8H11V10ZM15 16H13V12H15V16ZM15 10H13V8H15V10Z"></path></svg>
+            <span>Start Quiz</span>
+          </button>
+          <button id="startGameBtn" class="button" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM10 16H8V11H10V16ZM13 16H11V8H13V16ZM16 16H14V13H16V16Z"></path></svg>
+            <span>Play Flashcard Game</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="answer-section" class="hidden" aria-labelledby="answer-heading">
+        <h2 id="answer-heading">Answer:</h2>
+        <div id="answer" style="white-space: pre-wrap;"></div>
+      </section>
+
+      <section id="quiz-section" class="hidden" aria-labelledby="quiz-heading">
+        <h2 id="quiz-heading">Quiz Mode</h2>
+
+        <div id="quiz-loading-container" class="hidden">
+            <div class="spinner"></div>
+            <p id="quiz-loading-status"></p>
+        </div>
+
+        <div id="quiz-content-container">
+            <div id="quiz-header">
+              <p id="question-progress"></p>
+              <p id="score-display"></p>
+            </div>
+            <p id="quiz-question" class="quiz-question-text"></p>
+            <div id="quiz-options" class="quiz-options-grid"></div>
+            <p id="quiz-feedback" role="status" aria-live="polite"></p>
+            <button id="nextQuestionBtn" class="button hidden">Next Question</button>
+        </div>
+      </section>
+      
+      <section id="game-section" class="hidden" aria-labelledby="game-heading">
+        <h2 id="game-heading">Flashcard Flip Game</h2>
+
+        <div id="game-loading-container" class="hidden">
+          <div class="spinner"></div>
+          <p id="game-loading-status"></p>
+          <button id="exitGameLoadingBtn" class="button secondary">Cancel</button>
+        </div>
+
+        <div id="game-container" class="hidden">
+            <p id="card-progress"></p>
+            <div id="flashcard-container">
+              <div id="flashcard">
+                <div class="flashcard-face flashcard-front">
+                    <p id="flashcard-term"></p>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                    <p id="flashcard-definition"></p>
+                </div>
+              </div>
+            </div>
+            <p class="instruction">Click the card to flip it!</p>
+            <div id="game-controls" class="button-group hidden">
+              <button id="didntKnowBtn" class="button secondary">I Didn't Know This</button>
+              <button id="knewItBtn" class="button">I Knew This!</button>
+            </div>
+        </div>
+        <div id="game-results-section" class="hidden">
+            <h3 id="game-results-heading"></h3>
+            <div class="button-group">
+              <button id="restartGameBtn" class="button">Play Again</button>
+              <button id="exitGameBtn" class="button secondary">Exit Game</button>
+            </div>
+        </div>
+      </section>
+
+      <section id="results-section" class="hidden" aria-labelledby="results-heading">
+          <h2 id="results-heading">Quiz Complete!</h2>
+          <p id="final-score"></p>
+          <div class="button-group">
+            <button id="reviewMistakesBtn" class="button hidden">Review Mistakes</button>
+            <button id="restartQuizBtn" class="button">Take Quiz Again</button>
+            <button id="exitQuizBtn" class="button secondary">Exit Quiz</button>
+          </div>
+      </section>
+    </main>
+  </div>
+  
+  <div id="sidebar-overlay"></div>
+
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^0.14.0"
+      }
+    }
+  </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

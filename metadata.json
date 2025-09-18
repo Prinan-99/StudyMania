@@ -1,0 +1,5 @@
+{
+  "name": "AI Study Assistant",
+  "description": "An App that lets you upload study materials, ask questions, and test your knowledge with AI-generated quizzes and flashcards.",
+  "requestFramePermissions": []
+}
